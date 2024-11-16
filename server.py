@@ -28,8 +28,12 @@ def index():
 
 @app.route("/showSummary", methods=["POST"])
 def showSummary():
-    club = [club for club in clubs if club["email"] == request.form["email"]][0]
-    return render_template("welcome.html", club=club, competitions=competitions)
+    try:
+        club = [club for club in clubs if club["email"] == request.form["email"]][0]
+        return render_template("welcome.html", club=club, competitions=competitions)
+    except IndexError:
+        flash("Sorry, this email address is not recognized")
+        return render_template("index.html")
 
 
 @app.route("/book/<competition>/<club>")
@@ -52,6 +56,13 @@ def purchasePlaces():
     ]
     club = [c for c in clubs if c["name"] == request.form["club"]][0]
     placesRequired = int(request.form["places"])
+    pointsRequired = placesRequired * 1
+
+    if pointsRequired > int(club["points"]):
+        flash("Sorry, you do not have enough points to redeem the places")
+        return render_template("welcome.html", club=club, competitions=competitions)
+
+
     competition["numberOfPlaces"] = int(competition["numberOfPlaces"]) - placesRequired
     flash("Great-booking complete!")
     return render_template("welcome.html", club=club, competitions=competitions)
