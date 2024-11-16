@@ -2,6 +2,7 @@ import json
 from flask import Flask, render_template, request, redirect, flash, url_for
 from datetime import datetime
 
+
 def loadClubs():
     with open("clubs.json") as c:
         listOfClubs = json.load(c)["clubs"]
@@ -40,12 +41,14 @@ def showSummary():
 def book(competition, club):
     foundClub = [c for c in clubs if c["name"] == club][0]
     foundCompetition = [c for c in competitions if c["name"] == competition][0]
-    
+
     # check if the competition has already taken place
     competitionDate = datetime.strptime(foundCompetition["date"], "%Y-%m-%d %H:%M:%S")
     if competitionDate < datetime.now():
         flash("Sorry, you cannot book a competition that has already taken place")
-        return render_template("welcome.html", club=foundClub, competitions=competitions)
+        return render_template(
+            "welcome.html", club=foundClub, competitions=competitions
+        )
 
     if foundClub and foundCompetition:
         return render_template(
@@ -63,7 +66,7 @@ def purchasePlaces():
     ]
     club = [c for c in clubs if c["name"] == request.form["club"]][0]
     placesRequired = int(request.form["places"])
-    
+
     # check if the user is trying to book more than 12 places
     if placesRequired > 12:
         flash("Sorry, you cannot book more than 12 places")
@@ -75,7 +78,6 @@ def purchasePlaces():
     if pointsRequired > int(club["points"]):
         flash("Sorry, you do not have enough points to redeem the places")
         return render_template("welcome.html", club=club, competitions=competitions)
-
 
     competition["numberOfPlaces"] = int(competition["numberOfPlaces"]) - placesRequired
     flash("Great-booking complete!")
