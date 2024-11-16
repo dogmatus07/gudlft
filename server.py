@@ -40,11 +40,13 @@ def showSummary():
 def book(competition, club):
     foundClub = [c for c in clubs if c["name"] == club][0]
     foundCompetition = [c for c in competitions if c["name"] == competition][0]
+    
+    # check if the competition has already taken place
     competitionDate = datetime.strptime(foundCompetition["date"], "%Y-%m-%d %H:%M:%S")
     if competitionDate < datetime.now():
         flash("Sorry, you cannot book a competition that has already taken place")
         return render_template("welcome.html", club=foundClub, competitions=competitions)
-        
+
     if foundClub and foundCompetition:
         return render_template(
             "booking.html", club=foundClub, competition=foundCompetition
@@ -62,12 +64,14 @@ def purchasePlaces():
     club = [c for c in clubs if c["name"] == request.form["club"]][0]
     placesRequired = int(request.form["places"])
     
+    # check if the user is trying to book more than 12 places
     if placesRequired > 12:
         flash("Sorry, you cannot book more than 12 places")
         return render_template("welcome.html", club=club, competitions=competitions)
 
     pointsRequired = placesRequired * 1
 
+    # check if the user has enough points to book the places
     if pointsRequired > int(club["points"]):
         flash("Sorry, you do not have enough points to redeem the places")
         return render_template("welcome.html", club=club, competitions=competitions)
