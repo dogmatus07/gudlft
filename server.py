@@ -56,6 +56,11 @@ def purchasePlaces():
     ]
     club = [c for c in clubs if c["name"] == request.form["club"]][0]
     placesRequired = int(request.form["places"])
+    
+    if placesRequired > 12:
+        flash("Sorry, you cannot book more than 12 places")
+        return render_template("welcome.html", club=club, competitions=competitions)
+
     pointsRequired = placesRequired * 1
 
     if pointsRequired > int(club["points"]):
