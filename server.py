@@ -30,7 +30,7 @@ def index():
 def showSummary():
     try:
         club = [club for club in clubs if club["email"] == request.form["email"]][0]
-        return render_template("welcome.html", club=club, competitions=competitions)
+        return render_template("welcome.html", club=club, competitions=competitions, clubs=clubs)
     except IndexError:
         flash("Sorry, this email address is not recognized")
         return render_template("index.html")
@@ -85,6 +85,9 @@ def purchasePlaces():
 
 
 # TODO: Add route for points display
+@app.route("/pointsBoard")
+def pointsBoard():
+    return render_template("points_board.html", clubs=clubs)
 
 
 @app.route("/logout")
