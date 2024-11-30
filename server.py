@@ -56,8 +56,16 @@ def book(competition, club):
     """
     Book a competition
     """
-    foundClub = [c for c in clubs if c["name"] == club][0]
-    foundCompetition = [c for c in competitions if c["name"] == competition][0]
+    foundClub = next((c for c in clubs if c["name"] == club), None)
+    foundCompetition = next((c for c in competitions if c["name"] == competition), None)
+    
+    if not foundClub:
+        flash("Sorry, {club} doesn't exist")
+        return render_template("welcome.html", competitions=competitions, clubs=clubs)
+
+    if not foundCompetition:
+        flash("Sorry, {competition} doesn't exist")
+        return render_template("welcome.html", competitions=competitions, clubs=clubs)
 
     # check if the competition has already taken place
     competitionDate = datetime.strptime(foundCompetition["date"], "%Y-%m-%d %H:%M:%S")
@@ -72,7 +80,6 @@ def book(competition, club):
     else:
         flash("Something went wrong-please try again")
         return render_template("welcome.html", club=club, competitions=competitions)
-
 
 @app.route("/purchasePlaces", methods=["POST"])
 def purchasePlaces():
@@ -103,6 +110,11 @@ def purchasePlaces():
     competition["numberOfPlaces"] = int(competition["numberOfPlaces"]) - placesRequired
     # update the number of points for the club after booking
     club["points"] = int(club["points"]) - pointsRequired
+    
+    #save to json files
+    saveClubs()
+    saveCompetitions()
+    
     flash("Great-booking complete!")
     return render_template(
         "welcome.html", club=club, competitions=competitions, clubs=clubs
