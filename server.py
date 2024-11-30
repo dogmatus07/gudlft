@@ -4,12 +4,18 @@ from datetime import datetime
 
 
 def loadClubs():
+    """
+    Load the clubs from the clubs.json file    
+    """
     with open("clubs.json") as c:
         listOfClubs = json.load(c)["clubs"]
         return listOfClubs
 
 
 def loadCompetitions():
+    """
+    Load the competitions from the competitions.json file
+    """
     with open("competitions.json") as comps:
         listOfCompetitions = json.load(comps)["competitions"]
         return listOfCompetitions
@@ -24,11 +30,17 @@ clubs = loadClubs()
 
 @app.route("/")
 def index():
+    """
+    Render the index.html template
+    """
     return render_template("index.html")
 
 
 @app.route("/showSummary", methods=["POST"])
 def showSummary():
+    """
+    Show the summary of the club and competitions
+    """
     try:
         club = [club for club in clubs if club["email"] == request.form["email"]][0]
         return render_template(
@@ -41,6 +53,9 @@ def showSummary():
 
 @app.route("/book/<competition>/<club>")
 def book(competition, club):
+    """
+    Book a competition
+    """
     foundClub = [c for c in clubs if c["name"] == club][0]
     foundCompetition = [c for c in competitions if c["name"] == competition][0]
 
@@ -48,9 +63,7 @@ def book(competition, club):
     competitionDate = datetime.strptime(foundCompetition["date"], "%Y-%m-%d %H:%M:%S")
     if competitionDate < datetime.now():
         flash("Sorry, you cannot book a competition that has already taken place")
-        return render_template(
-            "welcome.html", club=foundClub, competitions=competitions, clubs=clubs
-        )
+        return render_template("welcome.html", club=foundClub, competitions=competitions)
 
     if foundClub and foundCompetition:
         return render_template(
@@ -63,6 +76,9 @@ def book(competition, club):
 
 @app.route("/purchasePlaces", methods=["POST"])
 def purchasePlaces():
+    """
+    Purchase places for a competition
+    """
     competition = [c for c in competitions if c["name"] == request.form["competition"]][
         0
     ]
@@ -81,9 +97,8 @@ def purchasePlaces():
     # check if the user has enough points to book the places
     if pointsRequired > int(club["points"]):
         flash("Sorry, you do not have enough points to redeem the places")
-        return render_template(
-            "welcome.html", club=club, competitions=competitions, clubs=clubs
-        )
+        return render_template("welcome.html", club=club, competitions=competitions)
+
 
     competition["numberOfPlaces"] = int(competition["numberOfPlaces"]) - placesRequired
     # update the number of points for the club after booking
@@ -102,6 +117,9 @@ def pointsBoard():
 
 @app.route("/logout")
 def logout():
+    """
+    Logout the user
+    """
     return redirect(url_for("index"))
 
 
