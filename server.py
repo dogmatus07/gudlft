@@ -64,7 +64,7 @@ def book(competition, club):
         return render_template("welcome.html", competitions=competitions, clubs=clubs, club=foundClub)
 
     if not foundCompetition:
-        flash("Sorry, this competition doesn't exist")
+        flash("Sorry, this competition is not recognized")
         return render_template("welcome.html", competitions=competitions, clubs=clubs, club=foundClub)
 
     # check if the competition has already taken place
