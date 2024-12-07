@@ -7,7 +7,9 @@ class websiteUser(HttpUser):
     
     @task
     def view_index(self):
-        # Access the index page in less than 5s
+        """
+        Access the index page in less than 5s
+        """
         start_time = time.time()
         response = self.client.get("/")
         total_time = time.time() - start_time
@@ -15,7 +17,9 @@ class websiteUser(HttpUser):
         
     @task
     def view_summary(self):
-        # Access the summary page in less than 5s
+        """
+        Access the summary page in less than 5s
+        """
         start_time = time.time()
         response = self.client.post("/showSummary", data={"email": "john@simplylift.co"})
         total_time = time.time() - start_time
@@ -23,9 +27,11 @@ class websiteUser(HttpUser):
     
     @task
     def book_places(self):
-        # Test booking places
-        # Update (purchasePlaces) to (book) < 2s
-        # View the booking page
+        """
+        Test booking places
+        Update (purchasePlaces) to (book) < 2s
+        View the booking page
+        """
         self.client.get("/book/Fall Classic/Simply Lift")
         start_time = time.time()
         response = self.client.post("/purchasePlaces", data={
