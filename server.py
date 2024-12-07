@@ -60,12 +60,12 @@ def book(competition, club):
     foundCompetition = next((c for c in competitions if c["name"] == competition), None)
     
     if not foundClub:
-        flash("Sorry, {club} doesn't exist")
-        return render_template("welcome.html", competitions=competitions, clubs=clubs)
+        flash("Sorry, this club is not recognized")
+        return render_template("welcome.html", competitions=competitions, clubs=clubs, club=foundClub)
 
     if not foundCompetition:
-        flash("Sorry, {competition} doesn't exist")
-        return render_template("welcome.html", competitions=competitions, clubs=clubs)
+        flash("Sorry, this competition doesn't exist")
+        return render_template("welcome.html", competitions=competitions, clubs=clubs, club=foundClub)
 
     # check if the competition has already taken place
     competitionDate = datetime.strptime(foundCompetition["date"], "%Y-%m-%d %H:%M:%S")
@@ -110,10 +110,6 @@ def purchasePlaces():
     competition["numberOfPlaces"] = int(competition["numberOfPlaces"]) - placesRequired
     # update the number of points for the club after booking
     club["points"] = int(club["points"]) - pointsRequired
-    
-    #save to json files
-    saveClubs()
-    saveCompetitions()
     
     flash("Great-booking complete!")
     return render_template(
