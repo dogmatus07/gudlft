@@ -71,7 +71,7 @@ def book(competition, club):
     competitionDate = datetime.strptime(foundCompetition["date"], "%Y-%m-%d %H:%M:%S")
     if competitionDate < datetime.now():
         flash("Sorry, you cannot book a competition that has already taken place")
-        return render_template("welcome.html", club=foundClub, competitions=competitions)
+        return render_template("welcome.html", club=foundClub, competitions=competitions, clubs=clubs)
 
     if foundClub and foundCompetition:
         return render_template(
